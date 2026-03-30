@@ -29,12 +29,10 @@ const ReminderScreen = () => {
     setLoading(false);
   };
 
-  // Fetch on mount
   useEffect(() => {
     fetchFiles();
   }, []);
 
-  // Fetch when screen comes into focus
   useFocusEffect(
     useCallback(() => {
       fetchFiles();
@@ -64,14 +62,16 @@ const ReminderScreen = () => {
       end={{ x: 1, y: 1 }}
       style={styles.container}
     >
-      <FlatList
-        data={files}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={{ padding: 16 }}
-        renderItem={({ item }) => (
-          <PrescriptionCard item={item} onDelete={fetchFiles} />
-        )}
-      />
+     <FlatList
+  data={files}
+  keyExtractor={(item) => item.id}
+  contentContainerStyle={styles.contain}
+  nestedScrollEnabled={true}  
+  showsVerticalScrollIndicator={false}
+  renderItem={({ item }) => (
+    <PrescriptionCard item={item} onDelete={fetchFiles} />
+  )}
+/>
     </LinearGradient>
   );
 };
@@ -87,4 +87,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  contain:{
+    padding: 16,
+    paddingBottom: 100,
+    flexGrow: 1,
+  }
 });

@@ -1,4 +1,5 @@
-import { supabase } from "../SupaBase/SupaBase";
+import { supabase, supabaseUrl, supabaseAnonKey } from "../SupaBase/SupaBase";
+import RNBlobUtil from "react-native-blob-util";
 
 export const uploadToSupabase = async (file) => {
   try {
@@ -6,31 +7,28 @@ export const uploadToSupabase = async (file) => {
     const ext = originalName.split(".").pop()?.toLowerCase() || "jpg";
     const fileName = `${Date.now()}.${ext}`;
     const mimeType = file.type || (ext === "pdf" ? "application/pdf" : "image/jpeg");
+    
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData?.session?.access_token || supabaseAnonKey;
+    const url = `${supabaseUrl}/storage/v1/object/prescriptions/${fileName}`;
 
-    const formData = new FormData();
-    formData.append("file", {
-      uri: file.uri,
-      name: fileName,
-      type: mimeType
-    } as any);
+    const response = await RNBlobUtil.fetch(
+      "POST",
+      url,
+      {
+        Authorization: `Bearer ${token}`,
+        apikey: supabaseAnonKey,
+        "Content-Type": mimeType,
+      },
+      RNBlobUtil.wrap(decodeURIComponent(file.uri.replace("file://", "")))
+    );
 
-    const { error } = await supabase.storage
-      .from("prescriptions")
-      .upload(fileName, formData, {
-        upsert: false,
-      });
-
-    if (error) {
-      console.log("Upload error:", JSON.stringify(error, null, 2));
+    if (response.info().status < 200 || response.info().status >= 300) {
+      console.log("Native Upload Failed. HTTP Status:", response.info().status);
       return null;
     }
 
     return fileName;
-  } catch (err) {
-    console.log("Upload exception:", err);
-    return null;
-  }
-};
   } catch (err) {
     console.log("Upload exception:", err);
     return null;

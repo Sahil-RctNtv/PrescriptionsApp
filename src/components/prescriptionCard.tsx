@@ -31,11 +31,15 @@ const PrescriptionCard = ({ item, onDelete }) => {
           <Text style={styles.pdfText}>PDF</Text>
         </View>
       ) : item.file_type === 'link' ? (
-        <View style={[styles.pdfBox, { backgroundColor: '#e0f7fa' }]}>
+        <View style={[styles.pdfBox, { backgroundColor: '#d9f1f4' }]}>
           <Text style={styles.pdfText}>🔗 Link</Text>
         </View>
       ) : (
-        <Image source={{ uri: item.file_url }} style={styles.image} />
+        <Image
+          source={{ uri: item.file_url }}
+          style={styles.image}
+          onError={() => console.log("Image failed:", item.file_url)}
+/>
       )}
 
       <View style={styles.info}>
@@ -62,37 +66,45 @@ export default PrescriptionCard;
 
 const styles = StyleSheet.create({
   card: {
-    padding: 12,
+    padding: 10,
     borderRadius: 12,
-    backgroundColor: '#fff',
-    marginBottom: 12,
-    elevation: 3,
+    backgroundColor: '#FFFFFF',
+    marginBottom: 10,
+    elevation: 7,
   },
   image: {
-    width: '100%',
+    width: '98%',
     height: 150,
     borderRadius: 10,
   },
   pdfBox: {
     height: 150,
+    width:"98%",
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#eee',
+    backgroundColor: '#bc2323',
     borderRadius: 10,
+    elevation:3,
+    alignSelf:'center'
   },
   pdfText: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 36,
+    fontWeight: '800',
   },
   info: {
     marginTop: 10,
   },
   title: {
+    color:"#da1414",
+    marginLeft:10,
+    fontSize:17,
     fontWeight: '600',
   },
   date: {
     fontSize: 12,
+    marginLeft:10,
     color: 'gray',
+    marginVertical:5,
   },
   actions: {
     flexDirection: 'row',
@@ -103,23 +115,25 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 5,
     padding: 10,
-    backgroundColor: '#4CAF50',
-    borderRadius: 8,
+    backgroundColor: '#275691',
+    borderRadius: 10,
     alignItems: 'center',
   },
   deleteBtn: {
     flex: 1,
     marginLeft: 5,
     padding: 10,
-    backgroundColor: '#ff4d4d',
+    backgroundColor: '#5bb5ab',
     borderRadius: 8,
     alignItems: 'center',
   },
   viewText: {
+    fontSize:15,
     color: '#fff',
     fontWeight: '600',
   },
   deleteText: {
+    fontSize:15,
     color: '#fff',
     fontWeight: '600',
   },
